@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>throttler</title>
+    <style>
+      .searchBox {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        position: relative;
+      }
+      #searchBar1 {
+        width: 30vw;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid gray;
+        margin: auto;
+      }
+      .searchBar {
+        /* background-color: blue; */
+        display: flex;
+        justify-content: center;
+        width: 38vw;
+        margin: auto;
+        align-items: center;
+        position: relative;
+      }
+      #searchScroll {
+        margin: auto;
+        text-align: left;
+        width: 30vw;
+        height: 20vh;
+        overflow-y: auto;
+        display: none;
+        position: absolute;
+        top: 32px;
+        left: 1vw;
+      }
+      .resultRow {
+        background-color: rgba(255, 245, 223, 0.377);
+        margin: 1px 0px;
+        padding: 5px 10px;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+      }
+      #searchBTN {
+        height: 5vh;
+        padding: 0px 1vw;
+        border-radius: 8px;
+        border: 1px solid gray;
+        cursor: pointer;
+      }
+      #searchBTN:hover {
+        background-color: rgba(252, 238, 222, 0.699);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="searchBox">
+      <div class="searchBar">
+        <input type="text" placeholder="Enter Movie Name" id="searchBar1" />
+        <input type="button" value="Search" id="searchBTN" />
+        <div id="searchScroll"></div>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  function getData() {
+    let searchBar = document.getElementById("searchBar1").value;
+    fetch(`https://www.omdbapi.com/?apikey=f8147154&s=${searchBar}`)
+      .then((res) => res.json())
+      .catch((error) => {
+        console.log(error);
+      })
+      .then((res) => {
+        console.log(res);
+        display(res.Search);
+      });
+  }
+  function display(data) {
+    let searchScroll = document.getElementById("searchScroll");
+    searchScroll.innerHTML = "";
+    try {
+      data.map((e) => {
+        let div = document.createElement("div");
+        div.setAttribute("class", "resultRow");
+        div.innerHTML = e.Title;
+        searchScroll.append(div);
+      });
+    } catch (error) {
+      console.log(error);
+      searchScroll.append("Not Found Anything");
+    }
+    searchScroll.style.display = "block";
+  }
+  document.getElementById("searchBTN").addEventListener("click", () => {
+    getData();
+  });
+</script>
